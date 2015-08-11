@@ -1,0 +1,331 @@
+"
+" ~/.vimrc
+"
+"{{{1 Plugins 
+set nocompatible          " leave the old ways behind
+
+if has('autocmd')
+  autocmd!
+endif
+" }}}1
+"{{{1 Standard (syntax, utf8, ft, clipboard, 256 ) 
+filetype plugin on
+filetype indent on
+
+set encoding=utf-8 nobomb  " UTF-8 encoding for all new files
+set shortmess=aoOstTAI     " shorten all messages except written
+set ttymouse=xterm2        " More accurate mouse tracking
+set ttyfast                " More redrawing characters sent to terminal
+set timeoutlen=900
+set ttimeoutlen=0
+set report=0               " Always report the number of lines changed by a cmd
+
+if &t_Co > 2 || has("gui_running" )
+  set t_Co=256 " 256 colors please
+  syntax on
+  set nohlsearch " highlighted search
+  " let base16colorspace=256
+endif
+"}}}
+
+"{{{1 OS & GUI Settings  
+
+"{{{2 Windows... pitiful... 
+
+    set guicursor+=a:blinkon0 " disable blinking cursor (gvimwin32)
+    let &guifont="Consolas:h10"
+
+  set clipboard=unnamed
+"{{{2 GUI 
+  " [+c text dialogues instead of popups]
+  " http://vimdoc.sourceforge.net/htmldoc/options.html#%27guioptions%27
+  set go=aceg
+
+  " menubar
+  set guioptions-=m
+
+  " scrollbar
+  set guioptions-=r
+
+  " toolbar
+  set go-=Tt
+
+" }}}
+"{{{1 Code format & Indenting 
+set noautoindent     " auto indents next new line
+set nosmartindent
+set nocindent
+set expandtab        " expand <Tabss with spaces
+set shiftround       " always round indents to multiples of shiftwidth
+set tabstop=2        " <Tab> move three characters
+set shiftwidth=2     " >> and << shift 3 spaces
+set softtabstop=2    " see spaces as tabs
+
+set showcmd      " show typing in normal mode
+set showbreak=…\  " show x in front of wrapped lines (trailing escaped space `\ `)
+set textwidth=0  " disable hard wrap (e.g. set to 79 for new files)
+
+set formatoptions=q  " Format text with gq, but don't format as I type.
+set formatoptions+=n " gq recognizes numbered lists, and will try to
+set formatoptions+=1 " break before, not after, a 1 letter word
+set nowrap
+set linebreak        " wrap long lines at a character in &breakat'
+
+
+" }}}
+"{{{1 Interaction (Keys, Mouse).
+
+let mapleader="\<Space>"
+set backspace=indent  " =0: full backspacing capabilities (indent,eol,start)
+set nojoinspaces  " never joing lines with two spaces
+
+"set mouse=nv " enable mouse in normal, visual
+set mouse=a       " akk
+set mousehide     " Hide the mouse when typing text
+set nostartofline " Avoid moving cursor to BOL when jumping around
+
+set whichwrap=b,s,h,l,<,> " <BS> <Space> h l <Left> <Right> can change lines
+set virtualedit+=block    " Let cursor move past the last char in <C-v> mode
+set scrolloff=3           " Keep 3 context lines above and below the cursor
+
+set matchpairs=(:),{:},[:],<:>
+set noshowmatch  " Don't Briefly jump to a paren once it's balanced
+set matchtime=2  " (for only .2 seconds).
+
+set complete=.,w,b,u,t " Better Completion TODO: g.
+set completeopt=longest,menuone,preview
+
+" This breaks arrow keys etc.
+" http://stackoverflow.com/questions/22425596/trigger-cursor-positioning-and-selection-on-going-to-normal-mode-or-esc-map/22677880#22677880
+" set noesckeys     " Don't check if Escape is used for Meta entry
+
+
+if has("autocmd")
+  " Resize splits with window
+  au VimResized * :wincmd =
+
+  " automatically leave insert mode after 'updatetime' ms of inacction
+  " http://vim.wikia.com/wiki/To_switch_back_to_normal_mode_automatically_after_inaction
+  " au CursorHoldI * stopinsert
+  " au InsertEnter * let updaterestore=&updatetime | set updatetime=7000
+  " au InsertLeave * let &updatetime=updaterestore
+
+  " Restore cursor position
+  au BufReadPost * if line("'\"") > 0|if line("'\"") <= line("$")|exe("norm '\"")|else|exe "norm $"|endif|endif
+
+endif
+
+" }}}
+"{{{1 Visuals.
+
+"{{{2 Basic 
+
+set number
+set synmaxcol=300 " Avoids editor lockup on extremely long lines
+set laststatus=2  " ??
+set cursorline    " track position
+set noshowmode    " hide secondary statusline
+set noerrorbells  " no beeps on errors
+set visualbell    " show visual bell
+set title         " show title in console title bar
+set noruler       " no: display row, column and % of document
+set splitright    " place new splits right & below
+set splitbelow
+
+"{{{2 Cursor Column 
+augroup activecursor
+  autocmd!
+  autocmd WinEnter * set cursorcolumn   | set cursorline
+  autocmd WinLeave * set nocursorcolumn | set nocursorline
+augroup END
+
+"{{{2 Commandline & Wildmenu 
+set history=1000
+
+ " don't complete files I won't edit with vim
+ if has('wildignore')
+   set wildignore+=*.a,*.o
+   set wildignore+=*.bmp,*.gif,*.ico,*.jpg,*.jpeg,*.png
+   set wildignore+=.DS_Store,.git,.hg,.svn
+   set wildignore+=*~,*.swp,*.tmp
+ endif
+
+" Complete files without case sensitivity, if the option is available
+  if exists('&wildignorecase')
+    set wildignorecase
+  endif
+"}}}
+"{{{ Listchars: show spaces, tab, eol trailing
+set listchars=trail:·,precedes:⇐,extends:⇒,tab:▸\ ,eol:↲
+set fillchars=fold:\ ,diff:╳,vert:│
+set nolist
+"}}}
+set foldmethod=marker
+set foldlevelstart=99
+"set foldnestmax=4     " deepest fold level
+"set foldenable      " start without folds
+"set foldcolumn=1
+"setlocal foldlevel=0
+"}}}
+"{{{ Searching.
+
+set incsearch  " increment search
+set ignorecase " case-insensitive search
+set smartcase  " uppercase causes case-sensitive search
+"set hlsearch  " included with colours -- highlight search results
+set nogdefault " Disabled - See http://j.mp/1mZvnrt  (no `g` on `:s`)
+"}}}
+
+"{{{ Files.
+
+"{{{ Keep old backups, write new ones. 
+set nobackup     " Disabled - See above (OS Settings)
+set writebackup  "
+"}}}
+
+"{{{ Disabled - Superseeded by other functionality. 
+" set noswapfile   " Disabled - See above (OS Settings)
+" set exrc secure  " Disabled -  Per-directory .vimrc files without unsafe cmds
+" set binary noeol " Disabled - Don’t add empty newlines at the end of files
+set nomodeline     " Disabled - Using securemodelines plugin
+" set modelines=5
+
+" }}}
+
+set noautowrite      " Never write a file unless I request it.
+set noautowriteall   " NEVER.
+"set noautoread      " Don't automatically re-read changed files.
+set ffs=unix,dos,mac " Try recognizing dos, unix, and mac line endings.
+
+
+"{{{ Filetype misc.
+if has("autocmd")
+
+  " Filetypes (au = autocmd)
+  au FileType helpfile setlocal nonumber " no line numbers when viewing help
+  au FileType mail,tex setlocal textwidth=72
+  au FileType cpp,c,java,sh,pl,php,asp setlocal autoindent
+  au FileType c,cpp,java setlocal foldmethod=syntax foldnestmax=5
+  au FileType cpp,c,java,sh,pl,php,asp setlocal cindent
+  au BufNewFile,BufRead  modprobe.conf setlocal syntax=modconf
+  "au BufNewFile,BufRead *.json setfiletype json syntax=javascript
+
+  "https://github.com/patoroco/system-config/blob/master/.vimrc
+
+endif
+" }}}
+
+" }}}
+
+"{{{1 Keybindings.  
+"{{{2 Basic functionality extension 
+vnoremap > >gv
+vnoremap < <gv
+
+" Center the cursor on the search word when using 'n'
+" http://git.z3bra.org/cgit.cgi/dotfiles/tree/vimrc
+nmap n nzz
+nmap N Nzz
+
+" This breaks in gvim
+" I use <C-f> for commandline window
+" nnoremap q: <Nop>
+" nnoremap q? <Nop>
+" nnoremap q/ <Nop>
+
+nnoremap <buffer> <Left> <Nop>
+nnoremap <buffer> <Right> <Nop>
+nnoremap <buffer> <Up> <Nop>
+nnoremap <buffer> <Down> <Nop>
+
+inoremap <buffer> <Left> <Esc>
+inoremap <buffer> <Right> <Esc>
+inoremap <buffer> <Up> <Esc>
+inoremap <buffer> <Down> <Esc>
+
+vnoremap <buffer> <Left> <Nop>
+vnoremap <buffer> <Right> <Nop>
+vnoremap <buffer> <Up> <Nop>
+vnoremap <buffer> <Down> <Nop>
+
+"{{{2 splits, tmux aware.
+" pieced together from:
+" https://github.com/christoomey/vim-tmux-navigator
+" http://www.codeography.com/2013/06/19/navigating-vim-and-tmux-splits
+  map <C-h> <C-w>h
+  map <C-j> <C-w>j
+  map <C-k> <C-w>k
+  map <C-l> <C-w>l
+inoremap <C-k> <C-k>
+"}}}
+"{{{2 Timestamps, datestamps 
+
+if exists("*strftime")
+  " Local datestamp
+  noremap <silent> <leader>zl m'A<C-R>=strftime("%d.%m.%Y")<CR><ESC>``
+
+  if has('win_32')
+    " To hell with it... local weak datestamps for Windows
+    " Unless for some unholy reason there's no strftime compiled in vim
+    " ... then the environment is garbage, so who cares about timestamps.
+    map <silent> <leader>zs <leader>zl
+    map <silent> <leader>zd <leader>zl
+  else
+    " Real timestamps, yes. Praise GNU... and Darwin?
+    noremap <silent> <Leader>zs m'A<C-R>=system('date -u \+\%Y\%m\%dT\%H\%MZ')<CR><ESC>``
+    noremap <silent> <Leader>zd m'A<C-R>=system('date -u \+\%Y\%m\%dZ')<CR><ESC>``
+  endif
+endif
+noremap <silent> <Leader>gh a<C-R>=' Guy Hughes'<CR><ESC>
+
+" Timestamped signatures
+nmap <silent> <leader>zh A<C-R>=' [Guy Hughes // '<CR><ESC><leader>zs<ESC>A<C-R>=']'<CR><ESC>
+nmap <silent> <Leader>zz A<C-R>=' ['.expand("$USER").' // '<CR><ESC><leader>zs<ESC>A<C-R>=']'<CR><ESC>
+"}}}2
+"{{{2 Leader. 
+
+" Edit vimrc.
+nnoremap <Leader>rc :tabnew $MYVIMRC<CR>
+
+" In normal/insert mode, ac center aligns the text after it to &tw or 80 chars
+nnoremap <leader>ac :center<CR>
+"
+" <Leader>dd to black hole register 
+nmap <silent> <leader>dd "_dd
+vmap <silent> <leader>d "_d
+nmap <silent> <leader>x "_x
+
+" Increment activator
+nmap <Leader>aa <Plug>(increment-activator-increment)
+nmap <Leader>az <Plug>(increment-activator-decrement)
+
+" <leader>\ clear hlsearch and redraw screen.
+noremap <silent> <Leader><Leader> :nohls<cr><c-l><CR>
+
+"{{{ <Leader>ml - Append Modeline.
+" https://github.com/godlygeek/vim-files/blob/master/.vimrc#L346
+" Insert a modeline on the last line with <leader>ml
+nnoremap <Leader>ml :call ModelineStub()<CR>
+"}}}
+
+" Remove trailing spaces from lines
+" http://vim.wikia.com/wiki/Remove_unwanted_spaces
+nnoremap <Leader>dts :let _s=@/<Bar>:%s/\s\+$//e<Bar>:let @/=_s<Bar>:nohl<CR>
+
+" Toggles
+nnoremap <silent> <Leader>n :set invnumber<CR>
+nnoremap <silent> <Leader>sp :set spell!<cr>
+nnoremap <silent> <Leader>p :set invpaste<CR>
+nnoremap <silent> <Leader>w :set invwrap<CR>
+nnoremap <silent> <leader>l :setlocal list!<CR>
+
+" Q formats paragraphs, instead of entering ex mode
+noremap Q gq
+nnoremap <silent> gqJ :call Exe#ExeWithOpts('norm! gqj', { 'tw' : 2147483647 })<CR>
+
+" K should behave like J
+nnoremap K kJ
+
+nnoremap <silent> <Leader>cc :vsc Edit.CommentSelection<CR>
+nnoremap <silent> <Leader>cu :vsc Edit.UncommentSelection<CR>
+vnoremap <silent> <Leader>cu :vsc Edit.UncommentSelection<CR>
