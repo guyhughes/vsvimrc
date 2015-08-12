@@ -233,20 +233,20 @@ nmap N Nzz
 " nnoremap q? <Nop>
 " nnoremap q/ <Nop>
 
-nnoremap <buffer> <Left> <Nop>
-nnoremap <buffer> <Right> <Nop>
-nnoremap <buffer> <Up> <Nop>
-nnoremap <buffer> <Down> <Nop>
+" nnoremap <buffer> <Left> <Nop>
+" nnoremap <buffer> <Right> <Nop>
+" nnoremap <buffer> <Up> <Nop>
+" nnoremap <buffer> <Down> <Nop>
 
-inoremap <buffer> <Left> <Esc>
-inoremap <buffer> <Right> <Esc>
-inoremap <buffer> <Up> <Esc>
-inoremap <buffer> <Down> <Esc>
+" inoremap <buffer> <Left> <Esc>
+" inoremap <buffer> <Right> <Esc>
+" inoremap <buffer> <Up> <Esc>
+" inoremap <buffer> <Down> <Esc>
 
-vnoremap <buffer> <Left> <Nop>
-vnoremap <buffer> <Right> <Nop>
-vnoremap <buffer> <Up> <Nop>
-vnoremap <buffer> <Down> <Nop>
+" vnoremap <buffer> <Left> <Nop>
+" vnoremap <buffer> <Right> <Nop>
+" vnoremap <buffer> <Up> <Nop>
+" vnoremap <buffer> <Down> <Nop>
 
 "{{{2 splits, tmux aware.
 " pieced together from:
@@ -326,6 +326,7 @@ nnoremap <silent> gqJ :call Exe#ExeWithOpts('norm! gqj', { 'tw' : 2147483647 })<
 " K should behave like J
 nnoremap K kJ
 
-nnoremap <silent> <Leader>cc :vsc Edit.CommentSelection<CR>
-nnoremap <silent> <Leader>cu :vsc Edit.UncommentSelection<CR>
-vnoremap <silent> <Leader>cu :vsc Edit.UncommentSelection<CR>
+nnoremap <Leader>cc :vsc Edit.CommentSelection<CR>
+nnoremap <Leader>cu :vsc Edit.UncommentSelection<CR>
+vnoremap <Leader>cc :vsc Edit.CommentSelection<CR>
+vnoremap <Leader>cu :vsc Edit.UncommentSelection<CR>
